@@ -14,6 +14,7 @@ from gtts import gTTS
 import base64
 # 오디오 관리를 위한 pydub 라이브러리 추가
 from pydub import AudioSegment
+import io
 
 ##### 기능 구현 함수 #####
 # 입력된 소리를 텍스트로 바꿈
