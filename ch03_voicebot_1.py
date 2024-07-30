@@ -1,6 +1,7 @@
 ##### 기본 정보 입력 #####
 import streamlit as st
 # audiorecorder 패키지 추가
+from streamlit_audio_recorder import audio_recorder
 from audiorecorder import audiorecorder
 # OpenAI 패키지 추가
 import openai
@@ -18,16 +19,14 @@ import io
 
 ##### 기능 구현 함수 #####
 # 입력된 소리를 텍스트로 바꿈
-def STT(audio):
-    # 파일 저장
+def STT(audio_data):
+    audio = AudioSegment.from_file(io.BytesIO(audio_data), format="wav")
     filename = 'input.mp3'
     audio.export(filename, format="mp3")
-    # 음원 파일 열기
+    
     audio_file = open(filename, "rb")
-    # Whisper 모델을 활용해 텍스트 얻기
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
     audio_file.close()
-    # 파일 삭제
     os.remove(filename)
     return transcript["text"]
 
@@ -39,12 +38,10 @@ def ask_gpt(prompt, model):
 
 # gTTS를 활용하여 ChatGPT의 텍스트 응답을 음성으로 생성
 def TTS(response):
-    # gTTS 를 활용하여 음성 파일 생성
     filename = "output.mp3"
     tts = gTTS(text=response, lang="ko")
     tts.save(filename)
-
-    # 음원 파일 자동 재생
+    
     with open(filename, "rb") as f:
         data = f.read()
         b64 = base64.b64encode(data).decode()
@@ -54,7 +51,6 @@ def TTS(response):
             </audio>
             """
         st.markdown(md, unsafe_allow_html=True,)
-    # 파일 삭제
     os.remove(filename)
 
 ##### 메인 함수 #####
