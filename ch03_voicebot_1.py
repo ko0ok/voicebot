@@ -12,6 +12,8 @@ from datetime import datetime
 from gtts import gTTS
 # 음원 파일 재생을 위한 패키지 추가
 import base64
+# ffmpeg-python 패키지 추가
+import ffmpeg
 import subprocess
 
 ##### ffmpeg 및 ffprobe 설정 함수 #####
@@ -31,7 +33,7 @@ setup_ffmpeg()
 # 입력된 소리를 텍스트로 바꿈
 def STT(audio):
     # 파일 저장
-    filename='input.mp3'
+    filename = 'input.mp3'
     audio.export(filename, format="mp3")
     # 음원 파일 열기
     audio_file = open(filename, "rb")
@@ -52,10 +54,10 @@ def ask_gpt(prompt, model):
 def TTS(response):
     # gTTS 를 활용하여 음성 파일 생성
     filename = "output.mp3"
-    tts = gTTS(text=response,lang="ko")
+    tts = gTTS(text=response, lang="ko")
     tts.save(filename)
 
-    # 음원 파일 자동 재생생
+    # 음원 파일 자동 재생
     with open(filename, "rb") as f:
         data = f.read()
         b64 = base64.b64encode(data).decode()
@@ -64,10 +66,10 @@ def TTS(response):
             <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
             </audio>
             """
-        st.markdown(md,unsafe_allow_html=True,)
+        st.markdown(md, unsafe_allow_html=True)
     # 파일 삭제
     os.remove(filename)
-
+    
 ##### 메인 함수 #####
 def main():
     # 기본 설정, 스트림릿을 활용하여 웹페이지 제작
@@ -130,7 +132,7 @@ def main():
         st.subheader("질문하기")
         # 음성 녹음 아이콘 추가
         audio = audiorecorder("클릭하여 녹음하기", "녹음중...")
-        if (audio.duration_seconds > 0) and (st.session_state["check_reset"]==False):
+        if (audio.duration_seconds > 0) and (st.session_state["check_reset"] == False):
             # 음성 재생 
             st.audio(audio.export().read())
             # 음원 파일에서 텍스트 추출
@@ -138,9 +140,10 @@ def main():
 
             # 채팅을 시각화하기 위해 질문 내용 저장
             now = datetime.now().strftime("%H:%M")
-            st.session_state["chat"] = st.session_state["chat"]+ [("user",now, question)]
+            st.session_state["chat"] = st.session_state["chat"] + [("user", now, question)]
             # GPT 모델에 넣을 프롬프트를 위해 질문 내용 저장
-            st.session_state["messages"] = st.session_state["messages"]+ [{"role": "user", "content": question}]
+            st.session_state["messages"] = st.session_state["messages"] + [{"role": "user", "content": question}]
+
 
     with col2:
         # 오른쪽 영역 작성
