@@ -1,1 +1,3 @@
 ffmpeg
+ffprobe
+portaudio19-dev
