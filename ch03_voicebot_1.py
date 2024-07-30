@@ -13,7 +13,7 @@ from gtts import gTTS
 # 음원 파일 재생을 위한 패키지 추가
 import base64
 # ffmpeg-python 패키지 추가
-import ffmpeg-python
+import ffmpeg
 import subprocess
 
 ##### ffmpeg 및 ffprobe 설정 함수 #####
