@@ -12,6 +12,20 @@ from datetime import datetime
 from gtts import gTTS
 # 음원 파일 재생을 위한 패키지 추가
 import base64
+import subprocess
+
+##### ffmpeg 및 ffprobe 설정 함수 #####
+def setup_ffmpeg():
+    ffmpeg_url = "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz"
+    ffmpeg_dir = os.path.expanduser("~/.streamlit/ffmpeg")
+    if not os.path.exists(ffmpeg_dir):
+        os.makedirs(ffmpeg_dir)
+        subprocess.run(["wget", ffmpeg_url, "-O", os.path.join(ffmpeg_dir, "ffmpeg-release-64bit-static.tar.xz")])
+        subprocess.run(["tar", "-xvf", os.path.join(ffmpeg_dir, "ffmpeg-release-64bit-static.tar.xz"), "-C", ffmpeg_dir, "--strip-components=1"])
+        os.environ["PATH"] += os.pathsep + ffmpeg_dir
+
+# ffmpeg 설정 함수 호출
+setup_ffmpeg()
 
 ##### 기능 구현 함수 #####
 # 입력된 소리를 텍스트로 바꿈
